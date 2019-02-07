@@ -12,11 +12,47 @@ discovery = DiscoveryV1(
 
 # Collections API Credentials
 START_URL = 'https://news.google.com/?hl=en-PH&gl=PH&ceid=PH:en'
-COL_ID = '0317c6fb-8532-4e8e-952a-778a8ba8596b'
-CFG_ID = '6f3eada6-1e8a-455c-a03c-ee32d36c9672'
+COL_ID = 'e0f6fd52-de0e-4bb7-a28d-028f7e274c96'
+CFG_ID = 'e6c8aaa5-00d2-491e-b959-4463aa126bec'
 ENV_ID = 'cc5ffbfc-b67e-4b5b-b98e-2c626a018060'
 
 def home(request):
+
+    resColList = discovery.list_collections(ENV_ID).get_result()
+    print(resColList)
+
+    colIdSet = set()
+    colNameSet = set()
+    configIdSet = set()
+    langSet = set()
+    statSet = set()
+    descSet = set()
+    createdSet = set()
+    updatedSet = set()
+
+    for collection in resColList['collections']:
+        colIdSet.add(collection['collection_id'])
+        colNameSet.add(collection['name'])
+        configIdSet.add(collection['configuration_id'])
+        langSet.add(collection['language'])
+        statSet.add(collection['status'])
+        descSet.add(collection['description'])
+        createdSet.add(collection['created'])
+        updatedSet.add(collection['updated'])
+
+    print('\ncolIdSet:' + str(colIdSet))
+    print('\ncolIdSet:' + str(colNameSet))
+
+
+    colDetails = zip(colIdSet, colNameSet, configIdSet, langSet, statSet, descSet, createdSet, updatedSet)
+
+    return render(
+        request, 
+        'Document/home.html', 
+        {
+            'colDetails' : colDetails
+        }
+    )
     # # Create credentials for the source that you are connecting to 
     # # using the Source Credentials API External link icon. 
     # # Record the returned credential_id of the newly created credentials.
@@ -119,8 +155,6 @@ def home(request):
     # # and then again on the frequency that you specified. 
     # # Note: If you modify anything in the source object of the configuration 
     # # a new crawl will be started (or restarted if one is already running) at that time.
-
-    return render(request, 'Document/home.html')
 
 def schema(request):
 
