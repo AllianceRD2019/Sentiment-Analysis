@@ -1,0 +1,17 @@
+{
+    "source" : {
+        "type" : "salesforce",
+        "credential_id" : "{credential_id}",
+        "schedule" : {
+          "enabled" : true,
+          "time_zone" : "Taipei",
+          "frequency" : "daily"
+        },
+        "options" : {
+           "site_collections" : [ {
+           "site_collection_path" : "https://news.google.com/?hl=en-PH&gl=PH&ceid=PH:en",
+           "limit" : 1000
+           } ]
+        }
+    }
+}

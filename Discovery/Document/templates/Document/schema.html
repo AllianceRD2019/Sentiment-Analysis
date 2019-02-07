@@ -1,0 +1,21 @@
+{% extends "Document/header.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    </head>
+    <body>
+        <h2>View Data Schema</h2>
+
+        <form action="/action_page.php">
+            <label for="collection">Choose a collection to view</label>
+            <select id="collection" name="collection">
+              <option value="Collection1">Collection1</option>
+              <option value="Collection2">Collection2</option>
+              <option value="Collection3">Collection3</option>
+              <option value="Collection4">Collection4</option>
+            </select>                                 
+          </form>
+    </body>
+</html>
+{% endblock %}	

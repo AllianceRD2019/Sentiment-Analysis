@@ -1,0 +1,114 @@
+{% extends "Document/header.html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>Bootstrap Example</title>
+    <link rel="stylesheet" href="{% static 'Document/css/tag.css' %}">
+    <script src="{% static 'Document/js/tag.js' %}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+      function form_submit() {
+        document.getElementById("updateForm").submit();
+        console.log('submit');
+      } 
+    </script>
+
+  </head>
+  <body>
+    <div class="row">
+      <h2>Manage Data</h2>
+      <h4>Collections of your private data and pre-enriched data to configure and query against.</h4>  
+    </div>
+    <hr> 
+
+    <div class="w3-container">   
+      <h3>Create a new data collection </h3>
+      <button type="button" class="w3-button w3-white w3-border w3-border-red w3-round-large" data-toggle="modal" data-target="#uploadModal">Upload your own data</button>
+      <button class="w3-button w3-white w3-border w3-border-red w3-round-large " data-toggle="modal" data-target="#connectModal">Connect to a Data Source</button>
+      <hr>
+      <div class="container">
+        <!-- Trigger the modal with a button -->
+        <!-- Modal -->
+        <div class="modal fade" id="uploadModal" role="dialog">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Name your new collection</h4>
+              </div>
+              
+              <div class="modal-body">
+                <form action="/action_page.php">
+                  <label for="fname">Collection Name</label>
+                  <input type="text" id="fname" name="firstname" placeholder="">
+              
+                  <label for="country">Select the language of your documents</label>
+                  <select id="country" name="country">
+                    <option value="australia">English</option>
+                    <option value="canada">Japanese</option>
+                    <option value="usa">Spanish</option>
+                    <option value="usa">German</option>
+                  </select>                                 
+                </form>
+              </div>
+
+              <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="connectModal" role="dialog">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Enter the URLs that you would like to sync</h4>
+              </div>
+              
+              <div class="modal-body"> 
+                <form id='updateForm' name='updateForm' action="{% url 'Document:update' %}" method ="post" enctype="multipart/form-data">
+                  {%csrf_token%}
+                  <label for="urlGrp">URL group to sync</label>
+                  {{form.as_p}}
+                  <input type="text" id="url" name="url" placeholder="https://www.example.com">
+              
+                  <!-- <label for="country">Select the language of your documents</label>
+                  <select id="country" name="country">
+                    <option value="australia">English</option>
+                    <option value="canada">Japanese</option>
+                    <option value="usa">Spanish</option>
+                    <option value="usa">German</option>
+                  </select>                                  -->
+
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-default" onclick="form_submit()">Submit</button>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>  
+
+      </div>
+    </div>
+
+    <ul class="tags">
+      <li class="tagAdd taglist">  
+        <input type="text" id="search-field">
+      </li>
+    </ul>
+
+  </body>
+</html>
+
+{% endblock %}	
