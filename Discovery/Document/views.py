@@ -12,8 +12,8 @@ discovery = DiscoveryV1(
 
 # Collections API Credentials
 START_URL = 'https://news.google.com/?hl=en-PH&gl=PH&ceid=PH:en'
-COL_ID = 'df969925-6bf8-4178-a13a-347eb3a6f734'
-CFG_ID = 'bd6910d0-adec-4864-9f1e-fe46a4780f0c'
+COL_ID = '0317c6fb-8532-4e8e-952a-778a8ba8596b'
+CFG_ID = '6f3eada6-1e8a-455c-a03c-ee32d36c9672'
 ENV_ID = 'cc5ffbfc-b67e-4b5b-b98e-2c626a018060'
 
 def home(request):
@@ -148,22 +148,27 @@ def update(request):
             print(json.dumps(resGetCfg, indent=2))
 
             # update SRC
-            urlKeyVal = {'url': urlSrc, 'crawl_speed': 'aggressive', 'maximum_hops': 20}
+            urlKeyVal = {'url': urlSrc}
+            missingUrl = {"urls": []}
+
+            if "urls" not in resGetCfg['source']['options']:
+                resGetCfg['source']['options'].update(missingUrl)
+            
             if urlSrc not in resGetCfg['source']['options']['urls']:
                 resGetCfg['source']['options']['urls'].append(urlKeyVal)
             
-            resUpdateCfg = discovery.update_configuration(environment_id=ENV_ID, configuration_id=CFG_ID, name=resGetCfg['name'], description=resGetCfg['description'], enrichments=['enrichments'], source=resGetCfg['source'])
+            resUpdateCfg = discovery.update_configuration(environment_id=ENV_ID, configuration_id=CFG_ID, name=resGetCfg['name'], description=resGetCfg['description'], enrichments=resGetCfg['enrichments'], source=resGetCfg['source']).get_result()
 
             print(json.dumps(resUpdateCfg, indent=2))
 
-            resGetCol = discovery.get_collection(ENV_ID, COL_ID)
-            resUpdateCol = discovery.update_collection(ENV_ID, COL_ID, name=resGetCol['name'], description=resGetCol['description'], configuration_id=resGetCol['configuration_id'])
+            resGetCol = discovery.get_collection(ENV_ID, COL_ID).get_result()
+            resUpdateCol = discovery.update_collection(ENV_ID, COL_ID, name=resGetCol['name'], description=resGetCol['description'], configuration_id=resGetCol['configuration_id']).get_result()
 
             print(json.dumps(resUpdateCol, indent=2))
 
     else:
         form = ConfigForm()
-    return render(request, 'Document/sucessUpdate.html', {
+    return render(request, 'Document/successUpdate.html', {
                                                     'form': form, 
                                                     'cfgName': resGetCfg['name'],
                                                     'colName': resGetCol['name'],
