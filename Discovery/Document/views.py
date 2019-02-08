@@ -12,8 +12,8 @@ discovery = DiscoveryV1(
 
 # Collections API Credentials
 START_URL = 'https://news.google.com/?hl=en-PH&gl=PH&ceid=PH:en'
-COL_ID = 'e0f6fd52-de0e-4bb7-a28d-028f7e274c96'
-CFG_ID = 'e6c8aaa5-00d2-491e-b959-4463aa126bec'
+COL_ID = 'ef4a0178-7f65-4fa6-b889-6f31a7c04cc2'
+# CFG_ID = 'e6c8aaa5-00d2-491e-b959-4463aa126bec'
 ENV_ID = 'cc5ffbfc-b67e-4b5b-b98e-2c626a018060'
 
 def home(request):
@@ -174,12 +174,28 @@ def update(request):
             # update config source field (URLS) first
             # then, update collections to reflect 
             # config updates based on new input URLS from user
+            
+            resGetCol = discovery.get_collection(ENV_ID, COL_ID).get_result()
+            CFG_ID = resGetCol['configuration_id']
 
             resGetCfg = discovery.get_configuration(ENV_ID, CFG_ID).get_result()
+            print('1.) resGetCfg')
             print(json.dumps(resGetCfg, indent=2))
+            print('------------------------------------------------------------')
 
             # update SRC
-            urlKeyVal = {'url': urlSrc}
+
+            # "source": {
+            #     "options": {},
+            #     "schedule": {
+            #     "enabled": true,
+            #     "frequency": "weekly",
+            #     "time_zone": "America/New_York"
+            #     },
+            #     "type": "web_crawl"
+            # }
+
+            urlKeyVal = {'url': urlSrc, 'crawl_speed': 'aggressive', 'maximum_hops': 20}
             missingUrl = {"urls": []}
 
             if "urls" not in resGetCfg['source']['options']:
@@ -188,42 +204,64 @@ def update(request):
             if urlSrc not in resGetCfg['source']['options']['urls']:
                 resGetCfg['source']['options']['urls'].append(urlKeyVal)
             
-            resUpdateCfg = discovery.update_configuration(environment_id=ENV_ID, configuration_id=CFG_ID, name=resGetCfg['name'], description=resGetCfg['description'], enrichments=resGetCfg['enrichments'], source=resGetCfg['source']).get_result()
+            print('2.) resGetCfg[''source'']')
+            print(json.dumps(resGetCfg['source'], indent=2))
+            print('------------------------------------------------------------')
 
-            print(json.dumps(resUpdateCfg, indent=2))
+            discovery.delete_configuration(ENV_ID, resGetCfg['configuration_id'])
+
+            print('2.5) resGetCfg[''source''] After deleting previous configuration')
+            rest = resGetCfg['source']
+            print(str(rest))
+            print('------------------------------------------------------------')
+
+            resNewCfg = discovery.create_configuration(
+                ENV_ID, 
+                name='WebCrawlerConfig000', 
+                description='Web Crawler Configuration', 
+                conversions=None, 
+                enrichments=resGetCfg['enrichments'],
+                normalizations=None, 
+                source=resGetCfg['source'],
+            ).get_result()
+
+            CFG_ID = resNewCfg['configuration_id']
+
+            print('2.5.5) resNewCfg[''source'']')
+            print(json.dumps(resNewCfg['source'], indent=2))
+            print('------------------------------------------------------------')
+
+            # resUpdateCfg = discovery.update_configuration(environment_id=ENV_ID, configuration_id=CFG_ID, name=resGetCfg['name'], description=resGetCfg['description'], enrichments=resGetCfg['enrichments'], source=newSrc).get_result()
+
+            print('3.)resNewCfg')
+            print(json.dumps(resNewCfg, indent=2))
+            print('------------------------------------------------------------')
+
+            resGetCfg = discovery.get_configuration(ENV_ID, CFG_ID).get_result()
+            print('4.) resGetCfg (again)')
+            print(json.dumps(resGetCfg, indent=2))
+            # print(str(resGetCfg))
+
+            print('------------------------------------------------------------')
+
 
             resGetCol = discovery.get_collection(ENV_ID, COL_ID).get_result()
-            resUpdateCol = discovery.update_collection(ENV_ID, COL_ID, name=resGetCol['name'], description=resGetCol['description'], configuration_id=resGetCol['configuration_id']).get_result()
+            resUpdateCol = discovery.update_collection(ENV_ID, COL_ID, name=resGetCol['name'], description=resGetCol['description'], configuration_id=resNewCfg['configuration_id']).get_result()
 
+            print('5.) resUpdateCol')
             print(json.dumps(resUpdateCol, indent=2))
+            print('------------------------------------------------------------')
+
 
     else:
         form = ConfigForm()
-    return render(request, 'Document/successUpdate.html', {
-                                                    'form': form, 
-                                                    'cfgName': resGetCfg['name'],
-                                                    'colName': resGetCol['name'],
-                                                    'urlSrc': urlSrc,
-                                                }
-                )
-
-
-
-                	
-{
-    'credential_id': 'a4b69966-7765-49c6-bcf5-cbd6c7c5d136',
-    'options': {
-        'urls': [
-                {
-                    'url': 'https://mhi.com/news/'
-                },
-                    'https://news.google.com/?hl=en-PH&gl=PH&ceid=PH:en'
-            ]
-            },
- 'schedule': {
-     'enabled': 'true',
-    'frequency': 'daily',
-    'time_zone': 'Asia/Taipei'
-    },
- 'type': 'web_crawl',
- 'url_batches': [{'urls': ['https://mhi.com/news/']}]}
+    return render(
+        request, 
+        'Document/successUpdate.html', 
+        {
+            'form': form, 
+            'cfgName': resGetCfg['name'],
+            'colName': resGetCol['name'],
+            'urlSrc': urlSrc,
+        }
+    )
