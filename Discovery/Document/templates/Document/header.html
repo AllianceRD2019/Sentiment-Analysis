@@ -5,7 +5,7 @@
 	<head>
 		<title>Alliance Discovery</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		
+
 		<!-- BootStrap -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -19,14 +19,11 @@
 
 	<body class="body" style="background-color:#f6f6f6">
 		<div class="container-fluid" style="min-height:100%; ">
-			<div class="row"  style="background-color:#FF0000">
-				<div class="col-sm-2">
-					<br>
-					<!-- <center> -->
-					<img src="{% static 'Document/img/logo.png' %}" class="responsive-img" style='max-height:100px;' alt="Alliance Logo">
-					<!-- </center> -->
-				</div>
-				<div class="col-sm-10">
+			<div class="row"  style="background-color:#ed3b3b; height: 6.8%;">
+				<div class="col-sm-2 logo-container">
+					<a class="logo-anchor" href="{% url 'Document:home'%}" style="text-decoration: none">
+						<img src="{% static 'Document/img/logo.png' %}" class="responsive-img asi-logo" style='max-height:100px;' alt="Alliance Logo">
+					</a>
 					<br>
 				</div>
 			</div>
@@ -52,7 +49,7 @@
 
 		<footer>
 			<div class="container-fluid" style='margin-left:15px'>
-				<p><a href="http://alliance.com.ph/" target="blank">Alliance</a> </p>
+				<p><a href="http://alliance.com.ph/" target="blank" style="color:rgba(0,0,0,0.75); text-decoration: none">Alliance</a></p>
 			</div>
 		</footer>
 

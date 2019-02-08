@@ -1,5 +1,6 @@
 {% extends "Document/header.html" %}
 {% load static %}
+
 {% block content %}
 <!DOCTYPE html>
 
@@ -22,7 +23,7 @@
       <h2>Manage Data</h2>
       <h4>Collections of your private data and pre-enriched data to configure and query against.</h4>  
     </div>
-    <hr> 
+    <hr>
 
     <div class="w3-container">   
       <h3>Create a new data collection </h3>
@@ -101,28 +102,30 @@
 
       </div>
       
-      <div class="row">
-        <h3>Collections List</h3>
+      <div class="w3-container">
+        <h3>Collections</h3>
         <br>
-      </div>
-      <ol>
         {% for colId, colName, configId, lang, stat, desc, created, updated in colDetails %}
-        <div class="row">
-          <li>
-            <!-- <li>{{key}}&nbsp;:&nbsp;{{value}}</li> -->
-            <h5>Collection Id: {{colId}}</h5>
-            <h5>Name: {{colName}}</h5>
-            <h5>Configuration Id: {{configId}}</h5>
-            <h5>Language: {{lang}}</h5>
-            <h5>Status: {{stat}}</h5>
-            <h5>Description: {{desc}}</h5>
-            <h5>Date Created: {{created}}</h5>
-            <h5>Date Updated: {{updated}}</h5>
-            <br>
-          </li>
+        <div class="card">
+            <div class="card-container">
+              <h4>Name: {{colName}}</h4>
+              <hr class="card-hr">
+              <h6>Collection Id: <br>&nbsp;&nbsp;{{colId}}</h6>
+              <h6>Configuration Id: <br>&nbsp;&nbsp;{{configId}}</h6>
+              <h6>Language: {{lang}}</h6>
+              <h6>Status: {{stat}}</h6>
+              {% if desc == "" %}
+                <h6>Description: None</h6>
+              {% else %}
+                <h6>Description: {{desc}}</h6>
+              {% endif %}
+              <h6>Date Created: {{created}}</h6>
+              <h6>Date Updated: {{updated}}</h6>
+              <br>
+            </div>
+          </div>
+      {% endfor %}
         </div>
-        {% endfor %}
-      </ol>
       </div>
     <!-- <ul class="tags">
       <li class="tagAdd taglist">  

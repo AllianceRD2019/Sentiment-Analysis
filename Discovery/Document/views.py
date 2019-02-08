@@ -19,38 +19,35 @@ ENV_ID = 'cc5ffbfc-b67e-4b5b-b98e-2c626a018060'
 def home(request):
 
     resColList = discovery.list_collections(ENV_ID).get_result()
-    print(resColList)
+    # print(resColList)
 
-    colIdSet = set()
-    colNameSet = set()
-    configIdSet = set()
-    langSet = set()
-    statSet = set()
-    descSet = set()
-    createdSet = set()
-    updatedSet = set()
+    colIdSet = []
+    colNameSet = []
+    configIdSet = []
+    langSet = []
+    statSet = []
+    descSet = []
+    createdSet = []
+    updatedSet = []
 
     for collection in resColList['collections']:
-        colIdSet.add(collection['collection_id'])
-        colNameSet.add(collection['name'])
-        configIdSet.add(collection['configuration_id'])
-        langSet.add(collection['language'])
-        statSet.add(collection['status'])
-        descSet.add(collection['description'])
-        createdSet.add(collection['created'])
-        updatedSet.add(collection['updated'])
+        colIdSet.append(collection['collection_id'])
+        colNameSet.append(collection['name'])
+        configIdSet.append(collection['configuration_id'])
+        langSet.append(collection['language'])
+        statSet.append(collection['status'])
+        descSet.append(collection['description'])
+        createdSet.append(collection['created'])
+        updatedSet.append(collection['updated'])
 
-    print('\ncolIdSet:' + str(colIdSet))
-    print('\ncolIdSet:' + str(colNameSet))
-
-
-    colDetails = zip(colIdSet, colNameSet, configIdSet, langSet, statSet, descSet, createdSet, updatedSet)
+    print('colNameSet:' + str(colNameSet))
+    print('colDetails:' + str(list(zip(colIdSet, colNameSet, configIdSet, langSet, statSet, descSet, createdSet, updatedSet))))
 
     return render(
         request, 
         'Document/home.html', 
         {
-            'colDetails' : colDetails
+            'colDetails' : zip(colIdSet, colNameSet, configIdSet, langSet, statSet, descSet, createdSet, updatedSet)
         }
     )
     # # Create credentials for the source that you are connecting to 

@@ -1,22 +1,26 @@
 {% extends "Document/header.html" %}
-{% block content %}
+{% load static %}
 
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
     </head>
     <body>
-        <h2>Build Queries</h2>
-
-        <form action="/action_page.php">
-            <label for="collection">Choose a collection to query</label>
-            <select id="collection" name="collection">
-              <option value="Collection1">Collection1</option>
-              <option value="Collection2">Collection2</option>
-              <option value="Collection3">Collection3</option>
-              <option value="Collection4">Collection4</option>
-            </select>                                 
-          </form>
+        <div class="row">
+            <h2>Build Queries</h2>
+        </div>
+        <div class="w3-container">
+            <form action="/action_page.php">
+                <label for="collection">Choose a collection to query</label>
+                    <select id="collection" name="collection">
+                        <option value="Collection1">Collection1</option>
+                        <option value="Collection2">Collection2</option>
+                        <option value="Collection3">Collection3</option>
+                        <option value="Collection4">Collection4</option>
+                    </select>                                 
+            </form>
+        </div>
     </body>
 </html>
 {% endblock %}	
