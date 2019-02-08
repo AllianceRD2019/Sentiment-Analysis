@@ -12,7 +12,7 @@ discovery = DiscoveryV1(
 
 # Collections API Credentials
 START_URL = 'https://news.google.com/?hl=en-PH&gl=PH&ceid=PH:en'
-COL_ID = 'ef4a0178-7f65-4fa6-b889-6f31a7c04cc2'
+COL_ID = 'b9ae4147-3fea-4351-99df-5c6a5d7b61bc'
 # CFG_ID = 'e6c8aaa5-00d2-491e-b959-4463aa126bec'
 ENV_ID = 'cc5ffbfc-b67e-4b5b-b98e-2c626a018060'
 
@@ -195,7 +195,7 @@ def update(request):
             #     "type": "web_crawl"
             # }
 
-            urlKeyVal = {'url': urlSrc, 'crawl_speed': 'aggressive', 'maximum_hops': 20}
+            urlKeyVal = {'url': urlSrc, 'crawl_speed': 'normal', 'maximum_hops': 10}
             missingUrl = {"urls": []}
 
             if "urls" not in resGetCfg['source']['options']:
@@ -208,33 +208,32 @@ def update(request):
             print(json.dumps(resGetCfg['source'], indent=2))
             print('------------------------------------------------------------')
 
-            discovery.delete_configuration(ENV_ID, resGetCfg['configuration_id'])
+            # discovery.delete_configuration(ENV_ID, resGetCfg['configuration_id'])
 
-            print('2.5) resGetCfg[''source''] After deleting previous configuration')
-            rest = resGetCfg['source']
-            print(str(rest))
-            print('------------------------------------------------------------')
+            # print('2.5) resGetCfg[''source''] After deleting previous configuration')
+            # print(json.dumps(resGetCfg['source'], indent=2))
+            # print('------------------------------------------------------------')
 
-            resNewCfg = discovery.create_configuration(
-                ENV_ID, 
-                name='WebCrawlerConfig000', 
-                description='Web Crawler Configuration', 
-                conversions=None, 
-                enrichments=resGetCfg['enrichments'],
-                normalizations=None, 
-                source=resGetCfg['source'],
-            ).get_result()
+            # resNewCfg = discovery.create_configuration(
+            #     ENV_ID, 
+            #     name=resGetCfg['name'], 
+            #     description=resGetCfg['description'], 
+            #     conversions=None, 
+            #     enrichments=resGetCfg['enrichments'],
+            #     normalizations=None, 
+            #     source=resGetCfg['source'],
+            # ).get_result()
 
-            CFG_ID = resNewCfg['configuration_id']
+            # CFG_ID = resNewCfg['configuration_id']
 
-            print('2.5.5) resNewCfg[''source'']')
-            print(json.dumps(resNewCfg['source'], indent=2))
-            print('------------------------------------------------------------')
+            # print('2.5.5) resNewCfg[''source'']')
+            # print(json.dumps(resNewCfg['source'], indent=2))
+            # print('------------------------------------------------------------')
 
-            # resUpdateCfg = discovery.update_configuration(environment_id=ENV_ID, configuration_id=CFG_ID, name=resGetCfg['name'], description=resGetCfg['description'], enrichments=resGetCfg['enrichments'], source=newSrc).get_result()
+            resUpdateCfg = discovery.update_configuration(environment_id=ENV_ID, configuration_id=resGetCfg['configuration_id'], name=resGetCfg['name'], description=resGetCfg['description'], enrichments=resGetCfg['enrichments'], source=resGetCfg['source']).get_result()
 
-            print('3.)resNewCfg')
-            print(json.dumps(resNewCfg, indent=2))
+            print('3.)resUpdateCfg')
+            print(json.dumps(resUpdateCfg, indent=2))
             print('------------------------------------------------------------')
 
             resGetCfg = discovery.get_configuration(ENV_ID, CFG_ID).get_result()
@@ -246,7 +245,7 @@ def update(request):
 
 
             resGetCol = discovery.get_collection(ENV_ID, COL_ID).get_result()
-            resUpdateCol = discovery.update_collection(ENV_ID, COL_ID, name=resGetCol['name'], description=resGetCol['description'], configuration_id=resNewCfg['configuration_id']).get_result()
+            resUpdateCol = discovery.update_collection(ENV_ID, COL_ID, name=resUpdateCfg['name'], description=resUpdateCfg['description'], configuration_id=resUpdateCfg['configuration_id']).get_result()
 
             print('5.) resUpdateCol')
             print(json.dumps(resUpdateCol, indent=2))
