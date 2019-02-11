@@ -24,18 +24,25 @@
       <h4>Collections of your private data and pre-enriched data to configure and query against.</h4>  
     </div>
     <hr>
-
     <div class="w3-container">   
       <h3>Create a new data collection </h3>
-      <button type="button" class="w3-button w3-white w3-border w3-border-red w3-round-large" data-toggle="modal" data-target="#uploadModal">Upload your own data</button>
+      <form action="{% url 'Document:upload' %}" method ="post" enctype="multipart/form-data">
+          {%csrf_token%}
+          {{csvUploadForm.as_p}}
+        </div>
+        <br>
+        <button type="submit" class="w3-button w3-white w3-border w3-border-red w3-round-large">Upload .csv File</button>
+        <!-- <button class="pure-button" type="submit" style=" color: white; background-color: #009688; border-radius: 4px; border-radius: 5px; font-size: 110%;">Upload and Continue</button> -->
+    </form>
+      <!-- <button type="button" class="w3-button w3-white w3-border w3-border-red w3-round-large" data-toggle="modal" data-target="#uploadModal">Upload your own data</button> -->
       <button class="w3-button w3-white w3-border w3-border-red w3-round-large " data-toggle="modal" data-target="#connectModal">Connect to a Data Source</button>
       <hr>
-      <div class="container">
-        <!-- Trigger the modal with a button -->
-        <!-- Modal -->
+      <!-- <div class="container">
+        Trigger the modal with a button
+        Modal
         <div class="modal fade" id="uploadModal" role="dialog">
           <div class="modal-dialog">
-            <!-- Modal content-->
+            Modal content
             <div class="modal-content">
 
               <div class="modal-header">
@@ -47,13 +54,19 @@
                 <form action="/action_page.php">
                   <label for="fname">Collection Name</label>
                   <input type="text" id="fname" name="firstname" placeholder="">
-              
                   <label for="country">Select the language of your documents</label>
                   <select id="country" name="country">
-                    <option value="australia">English</option>
-                    <option value="canada">Japanese</option>
-                    <option value="usa">Spanish</option>
-                    <option value="usa">German</option>
+                    <option value="australia">English (en)	Full</option>
+                    <option value="canada">Arabic (ar)	Basic</option>
+                    <option value="usa">Chinese, simplified (zh-CN)	Basic</option>
+                    <option value="usa">Dutch (nl)	Basic</option>
+                    <option value="usa">French (fr)	Full</option>
+                    <option value="usa">German (de)	Full</option>
+                    <option value="usa">Italian (it)	Full</option>
+                    <option value="usa">Japanese (ja)	Full</option>
+                    <option value="usa">Korean (ko)	Full</option>
+                    <option value="usa">Portuguese, Brazilian (pt-br)	Full</option>
+                    <option value="usa">Spanish (es)</option>
                   </select>                                 
                 </form>
               </div>
@@ -64,7 +77,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="modal fade" id="connectModal" role="dialog">
           <div class="modal-dialog">
             <!-- Modal content-->
@@ -79,8 +92,8 @@
                 <form id='updateForm' name='updateForm' action="{% url 'Document:update' %}" method ="post" enctype="multipart/form-data">
                   {%csrf_token%}
                   <label for="urlGrp">URL group to sync</label>
-                  {{form.as_p}}
-                  <input type="text" id="url" name="url" placeholder="https://www.example.com">
+                  {{configForm.as_p}}
+                  <!-- <input type="text" id="url" name="url" placeholder="https://www.example.com"> -->
               
                   <!-- <label for="country">Select the language of your documents</label>
                   <select id="country" name="country">

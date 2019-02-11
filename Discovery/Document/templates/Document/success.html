@@ -1,0 +1,27 @@
+{% extends "Document/header.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    </head>
+    <body>
+        <div class="row">
+            {% if type == "addUrl" %}
+                <h3>Successfully added URL '{{urlSrc}}' <br> to configuration '{{cfgName}}' <br> for collection '{{colName}}'</h3>
+                <br><br>
+                <p><a href="http://localhost:8000/">Back to Home Page</a></p>
+            {% elif type == "uploadCsv" %}
+                <h3>Successfully uploaded file '{{inputFileName}}' <br> to configuration '{{cfgName}}' <br> for collection '{{colName}}'</h3>
+                <br><br>
+                <p><a href="http://localhost:8000/">Back to Home Page</a></p>
+            {% endif %}
+        </div>
+        <!-- <div class="w3-container"> -->
+            <!-- <br><br>
+            <p><a href="http://localhost:8000/">Back to Home Page</a></p> -->
+        <!-- </div> -->
+    </body>
+</html>
+{% endblock %}	

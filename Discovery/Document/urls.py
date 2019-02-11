@@ -12,6 +12,7 @@ urlpatterns = [
     path('metrics/', views.metrics, name='metrics'),
     path('queries/', views.queries, name='queries'),
     path('update/', views.update, name='update'),
+    path('upload/', views.upload, name='upload'),
 ]
 
 if settings.DEBUG:
