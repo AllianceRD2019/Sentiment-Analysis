@@ -5,13 +5,15 @@ from Document.models import Article
 from django.conf import settings
 
 # scrapy dependencies
-from twisted.internet import reactor
-from scrapy.crawler import CrawlerRunner, CrawlerProcess
-from scrapy.utils.project import get_project_settings
-from webcrawler.webcrawler import settings
+# from twisted.internet import reactor
+# from scrapy.crawler import CrawlerRunner, CrawlerProcess
+# from scrapy.utils.project import get_project_settings
+# from webcrawler.webcrawler import settings
 # from crawler.crawler.spiders.site_crawler import SiteCrawler
-from webcrawler.webcrawler.spiders.article_spider import ArticleSpider
-
+# from webcrawler.webcrawler.spiders.article_spider import ArticleSpider
+from bs4 import BeautifulSoup
+from html.parser import HTMLParser
+import requests
 import csv
 import os
 
@@ -75,16 +77,51 @@ def upload(request):
             print('curr path: ' + os.path.dirname(os.path.realpath(__file__)))
             print('list size: ' + str(len(crawlUrls)))
             
+            # http://www.digitaljournal.com/pr/4130511
+            # http://www.digitaljournal.com/pr/4130512
+            headers = requests.utils.default_headers()
+            headers.update({
+                'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+            })
+
+            for index, url in enumerate(crawlUrls):
+                try:
+                    print("url #" + str(index))
+                    r = requests.get(url, headers=headers)
+                    data = r.text
+                    soup = BeautifulSoup(data, "lxml")
+                    concatP = ''
+                    for p in soup.find_all('p'):
+                        # print(p)
+                        concatP = concatP + "\n" + str(p)
+
+                    article = Article.objects.get(url=url)
+                    # remove html
+                    HTMLCleaner = MLStripper()
+                    # HTMLCleaner.feed('\n'.join(map(str, p)))
+                    HTMLCleaner.feed(concatP)
+                    article.article_content = HTMLCleaner.get_data()
+                    # save parsed item as article content
+                    article.save()
+                except requests.exceptions.ConnectionError:
+                    r.status_code = "Connection refused"
+                    print(r.status_code)
+            print('successfully saved to db.')
+
             # execute scraper passing list of urls as argument
             # os.system("scrapy runspider site_crawler.py -a urls=" + crawlUrls)
             
-            print('BOT_NAME: ' + settings.BOT_NAME)
-            print('ITEM_PIPELINES: ' + str(settings.ITEM_PIPELINES))
-            runner = CrawlerRunner(get_project_settings())
+            # print('BOT_NAME: ' + settings.BOT_NAME)
+            # print('ITEM_PIPELINES: ' + str(settings.ITEM_PIPELINES))
+
+
+
+
+            # runner = CrawlerRunner(get_project_settings())
             
-            d = runner.crawl(crawler_or_spidercls=ArticleSpider(), urlList=crawlUrls)
-            d.addBoth(lambda _: reactor.stop())
-            reactor.run(installSignalHandlers=0) # the script will block here until the crawling is finished
+            # d = runner.crawl(crawler_or_spidercls=ArticleSpider(), urlList=crawlUrls)
+            # d.addBoth(lambda _: reactor.stop())
+            # reactor.run(installSignalHandlers=0) # the script will block here until the crawling is finished
             # reactor.run(0)
             
             # os.system("cd ../webcrawler && scrapy crawl articles -a urlList=" + str(crawlUrls))
@@ -113,3 +150,15 @@ def upload(request):
             'type': 'uploadCsv',
             'errorMessage': 'No File Uploaded.',
         })
+
+# Class used to remove HTML tags from a string
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
