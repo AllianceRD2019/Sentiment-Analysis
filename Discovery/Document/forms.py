@@ -1,5 +1,5 @@
 from django import forms
-from Document.models import Config, InputFile
+from Document.models import Config, Article
 
 class ConfigForm(forms.ModelForm):
     url = forms.CharField(max_length=250, widget=forms.TextInput(attrs={'placeholder':'https://www.example.com'}), label='')
@@ -16,7 +16,7 @@ class ConfigForm(forms.ModelForm):
     
 class CsvUploadForm(forms.ModelForm):
     class Meta:
-        model = InputFile
+        model = Article
         fields = ('csvFile',)
         widgets = {
             # 'csvFile': forms.ClearableFileInput(attrs={'class': 'w3-button w3-white w3-border w3-border-red w3-round-large'}),
