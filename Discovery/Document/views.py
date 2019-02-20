@@ -85,27 +85,28 @@ def upload(request):
             })
 
             for index, url in enumerate(crawlUrls):
-                try:
-                    print("url #" + str(index))
-                    r = requests.get(url, headers=headers)
-                    data = r.text
-                    soup = BeautifulSoup(data, "lxml")
-                    concatP = ''
-                    for p in soup.find_all('p'):
-                        # print(p)
-                        concatP = concatP + "\n" + str(p)
+                if url is not '':
+                    try:
+                        print("url #" + str(index))
+                        r = requests.get(url, headers=headers)
+                        data = r.text
+                        soup = BeautifulSoup(data, "lxml")
+                        concatP = ''
+                        for p in soup.find_all('p'):
+                            # print(p)
+                            concatP = concatP + "\n" + str(p)
 
-                    article = Article.objects.get(url=url)
-                    # remove html
-                    HTMLCleaner = MLStripper()
-                    # HTMLCleaner.feed('\n'.join(map(str, p)))
-                    HTMLCleaner.feed(concatP)
-                    article.article_content = HTMLCleaner.get_data()
-                    # save parsed item as article content
-                    article.save()
-                except requests.exceptions.ConnectionError:
-                    r.status_code = "Connection refused"
-                    print(r.status_code)
+                        article = Article.objects.get(url=url)
+                        # remove html
+                        HTMLCleaner = MLStripper()
+                        # HTMLCleaner.feed('\n'.join(map(str, p)))
+                        HTMLCleaner.feed(concatP)
+                        article.article_content = HTMLCleaner.get_data()
+                        # save parsed item as article content
+                        article.save()
+                    except requests.exceptions.ConnectionError:
+                        r.status_code = "Connection refused"
+                        print(r.status_code)
             print('successfully saved to db.')
 
             # execute scraper passing list of urls as argument
