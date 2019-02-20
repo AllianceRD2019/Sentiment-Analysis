@@ -91,17 +91,18 @@ def upload(request):
                         r = requests.get(url, headers=headers)
                         data = r.text
                         soup = BeautifulSoup(data, "lxml")
-                        concatP = ''
-                        for p in soup.find_all('p'):
+                        data = [element.text for element in soup.find_all('p')]
+                        # for p.text in soup.find_all('p'):
                             # print(p)
-                            concatP = concatP + "\n" + str(p)
+                            # concatP += p.text + "\n"
 
                         article = Article.objects.get(url=url)
                         # remove html
-                        HTMLCleaner = MLStripper()
-                        # HTMLCleaner.feed('\n'.join(map(str, p)))
-                        HTMLCleaner.feed(concatP)
-                        article.article_content = HTMLCleaner.get_data()
+                        # HTMLCleaner = MLStripper()
+                        concatP = '\n'.join(map(str, data))
+                        # HTMLCleaner.feed(concatP)
+                        # article.article_content = HTMLCleaner.get_data()
+                        article.article_content = concatP
                         # save parsed item as article content
                         article.save()
                     except requests.exceptions.ConnectionError:
